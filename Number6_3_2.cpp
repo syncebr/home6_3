@@ -6,42 +6,72 @@
 
 #include<iostream>
 #include<ctime>
+#include<stdlib.h>
+#include<stdio.h>
 
+#include <iostream>
+#include <ctime>
+#define ROW 6
+#define COL 2
 using namespace std;
+void randArr(int *arr, int sizeArr);
+void multiRandArr(int *arr, int row, int col);
+void printArr(int *arr, int sizeArr);
+void multiPrintArr(int *arr, int row, int col);
 
-void GenerateArr(int arr[], int row, int col);
-void PrintArr(int arr[], int row, int col);
-
-int main(void) {
-	setlocale(LC_ALL, "rus");
+int main(void)
+{
+	//setlocale(LC_ALL, "rus");
 	srand(time(0));
-	const int ROW = 5;
-	const int COL = 6;
-	int arr[ROW][COL];
-	GenerateArr(arr[0], ROW, COL);
-	PrintArr(arr[0], ROW, COL);
-	system("pause");
-	return 0;
+	int myArr[ROW][COL] = {};
+	multiRandArr(myArr[0], ROW, COL);
+	multiPrintArr(myArr[0], ROW, COL);
+	cout << endl << endl;
+
+	int *arr[ROW];
+	int *rowPtr = myArr[0];
+
+	int i = 0;
+	while (rowPtr < myArr[0] + ROW * COL)
+	{
+		arr[i++] = rowPtr;
+		rowPtr += COL;
+	}
+	//Сортировка методом пузырька
+	for (int k = ROW - 1; k > 0; k--)
+		for (int i = 0; i < k; i++)
+			if (*arr[i] > *arr[i + 1])
+			{
+				int *tmp = arr[i];
+				arr[i] = arr[i + 1];
+				arr[i + 1] = tmp;
+			}
+	for (int i = 0; i<ROW; i++)
+	{
+		printArr(arr[i], COL);
+		cout << endl;
+	}
+	//system("pause");
 }
 
-void GenerateArr(int arr[], int row, int col) {
-	int *ptr;
-	ptr = arr;
-	while (ptr < (arr + row*col)) {
-		*ptr = rand() % 21 - 10;
-		ptr++;
+
+
+void randArr(int *arr, int sizeArr) {
+	for (int i = 0; i<sizeArr; i++, arr++)
+		*arr = rand() % 21 - 10;
+}
+void multiRandArr(int *arr, int row, int col) {
+	for (int i = 0; i < row; i++, arr += col) {
+		randArr(arr, col);
 	}
 }
-
-void PrintArr(int arr[], int row, int col) {
-	int *ptr;
-	ptr = arr;
-	int counter=0;
-	while (ptr < (arr + row*col)) {
-		printf("%2d  ",*ptr);
-		counter++;
-		ptr++;
-		if (counter%col == 0) cout << endl;
+void printArr(int *arr, int sizeArr) {
+	for (int i = 0; i < sizeArr; i++, arr++)
+		printf("%3d ", *arr);
+}
+void multiPrintArr(int *arr, int row, int col) {
+	for (int i = 0; i < row; i++, arr += col) {
+		printArr(arr, col);
+		cout << endl;
 	}
-	cout << endl;
 }
